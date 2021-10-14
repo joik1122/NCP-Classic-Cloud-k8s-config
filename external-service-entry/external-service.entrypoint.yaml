@@ -1,0 +1,35 @@
+## 클러스터 외부 트래픽에 대한 istio 관찰을 위한 service entry
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: ncp-gitlab
+  namespace: prod
+spec:
+  hosts:
+  - gitlab.realpacking.com  # not used
+  addresses:
+  - "serverIPAddress"
+  ports:
+    - number: 80
+      name: http
+      protocol: HTTP
+  resolution: NONE
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: ncp-jenkins
+  namespace: prod
+spec:
+  hosts:
+  - jenkins.dummy  # not used
+  addresses:
+  - "serverIPAddress"
+  ports:
+    - number: 18080
+      name: http
+      protocol: HTTP
+  resolution: NONE
+  location: MESH_EXTERNAL
+---

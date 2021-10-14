@@ -1,0 +1,31 @@
+# ingress gateway에 포트번호 열어둘것
+# kubectl apply -n rp-istio $KC
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: istio-grafana-dev-vs
+spec:
+  hosts: 
+    - dev.realpacking.com
+  gateways:
+    - istio-system/internal-istio-ingressgateway  #4. Gateway name
+  http:
+  - match:
+    - port: 55126
+    route:
+    - destination:
+        host: grafana.istio-system.svc.cluster.local     
+        port:
+          number: 3000
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: istio-grafana-internal
+spec:
+  host: grafana.istio-system.svc.cluster.local   
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+

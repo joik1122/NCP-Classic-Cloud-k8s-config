@@ -1,0 +1,12 @@
+# 로컬 팟 성능 측정을 위한 VPA 설치 가이드
+
+minikube addons enable metrics-server
+git clone https://github.com/cowboysysop/charts.git
+cd charts\charts\vertical-pod-autoscaler
+helm install helm-vpa .
+kubectl replace -f crds/verticalpodautoscaler.yaml
+kubectl replace -f crds/verticalpodautoscalercheckpoint.yaml
+
+helm repo add cowboysysop https://cowboysysop.github.io/charts/
+helm repo update
+helm upgrade helm-vpa cowboysysop/vertical-pod-autoscaler

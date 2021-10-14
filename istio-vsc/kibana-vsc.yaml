@@ -1,0 +1,30 @@
+# ingress gateway에 포트번호 열어둘것
+# kubectl apply -n rp-istio $KC
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: kibana-dev-vs
+spec:
+  hosts: 
+    - "*"
+  gateways:
+    - istio-system/internal-istio-ingressgateway  #4. Gateway name
+  http:
+  - match:
+    - port: 5601
+    route:
+    - destination:
+        host: kibana.logging.svc.cluster.local   
+        port:
+          number: 5601
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: kibana-internal
+spec:
+  host: kibana.logging.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN

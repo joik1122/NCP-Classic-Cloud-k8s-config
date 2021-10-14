@@ -1,0 +1,49 @@
+## 클러스터 외부 트래픽에 대한 istio 관찰을 위한 service entry
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: ext-cluster-db
+  namespace: prod
+spec:
+  hosts:
+    - "slb-3649193.ncloudslb.com"
+  ports:
+    - number: 3306
+      name: tcp
+      protocol: tcp
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: ext-145db
+  namespace: prod
+spec:
+  hosts:
+  - database-145.external  # not used
+  addresses:
+  - "serverIPAddress"
+  ports:
+    - number: 3306
+      name: tcp
+      protocol: tcp
+  resolution: NONE
+  location: MESH_EXTERNAL
+---
+#apiVersion: networking.istio.io/v1alpha3
+#kind: VirtualService
+#metadata:
+#  name: ext-cluster-db-vs
+#  namespace: prod
+#spec:
+#  hosts:
+#    - "slb-3649193.ncloudslb.com"
+#  tcp:
+#  #- timeout: 3s
+#  - route:
+#      - destination:
+#          host: "slb-3649193.ncloudslb.com"
+#          port:
+#            number: 3306
+#---

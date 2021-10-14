@@ -1,0 +1,31 @@
+# 예거대시보드 로드벨런서에 붙이는 설정
+# ingress gateway에 포트번호 열어둘것
+# kubectl apply -n rp-istio $KC
+---
+kind: VirtualService
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: jaeger-dev-vs
+spec:
+  hosts: 
+    - dev.realpacking.com
+  gateways:
+    - istio-system/internal-istio-ingressgateway  #4. Gateway name
+  http:
+  - match:
+    - port: 16686
+    route:
+    - destination:
+        host: jaeger-query.tracing.svc.cluster.local     
+        port:
+          number: 16686
+---
+kind: DestinationRule
+apiVersion: networking.istio.io/v1alpha3
+metadata:
+  name: jaeger-internal
+spec:
+  host: jaeger-query.tracing.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
